@@ -1,4 +1,4 @@
-<?php
+<?php 
 require_once 'db.php';
 
 if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
