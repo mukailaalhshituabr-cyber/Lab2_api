@@ -1,26 +1,27 @@
 <?php
-// THIS MUST BE THE FIRST LINE
-header('Content-Type: application/json');
+header("Content-Type: application/json");
+include "../db.php";
 
-// Include database connection
-require_once 'db.php';
+$sql = "SELECT * FROM items";
+$result = $conn->query($sql);
 
-try {
-    // Query to get all records
-    $stmt = $pdo->query("SELECT id, name, phone FROM items ORDER BY id DESC");
-    $items = $stmt->fetchAll();
-    
-    // ALWAYS return JSON
+$data = [];
+
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $data[] = $row;
+    }
+
     echo json_encode([
-        'success' => true,
-        'data' => $items
-    ], JSON_PRETTY_PRINT);
-    
-} catch(PDOException $e) {
-    // Error response as JSON
+        "success" => true,
+        "data" => $data
+    ]);
+} else {
     echo json_encode([
-        'success' => false,
-        'error' => 'Failed to fetch records'
+        "success" => false,
+        "error" => "Query failed"
     ]);
 }
+
+$conn->close();
 ?>

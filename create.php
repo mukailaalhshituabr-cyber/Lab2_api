@@ -1,52 +1,31 @@
 <?php
-// THIS MUST BE THE FIRST LINE
-header('Content-Type: application/json');
+header("Content-Type: application/json");
+include "../db.php";
 
-// Include database connection
-require_once 'db.php';
-
-// Check if all required fields are present
 if (!isset($_POST['name']) || !isset($_POST['phone'])) {
     echo json_encode([
-        'success' => false,
-        'error' => 'Name and phone are required'
+        "success" => false,
+        "error" => "Missing parameters"
     ]);
     exit;
 }
 
-$name = trim($_POST['name']);
-$phone = trim($_POST['phone']);
+$name = $conn->real_escape_string($_POST['name']);
+$phone = $conn->real_escape_string($_POST['phone']);
 
-// Validate fields are not empty
-if (empty($name) || empty($phone)) {
+$sql = "INSERT INTO items (name, phone) VALUES ('$name', '$phone')";
+
+if ($conn->query($sql)) {
     echo json_encode([
-        'success' => false,
-        'error' => 'Name and phone cannot be empty'
+        "success" => true,
+        "data" => ["id" => $conn->insert_id]
     ]);
-    exit;
-}
-
-try {
-    // Insert new record
-    $stmt = $pdo->prepare("INSERT INTO items (name, phone) VALUES (?, ?)");
-    $stmt->execute([$name, $phone]);
-    
-    // Get the new record ID
-    $newId = $pdo->lastInsertId();
-    
-    // Return success with new ID (EXACTLY as required)
+} else {
     echo json_encode([
-        'success' => true,
-        'data' => [
-            'id' => (int)$newId
-        ]
-    ], JSON_PRETTY_PRINT);
-    
-} catch(PDOException $e) {
-    // Error response
-    echo json_encode([
-        'success' => false,
-        'error' => 'Failed to create record'
+        "success" => false,
+        "error" => "Insert failed"
     ]);
 }
+
+$conn->close();
 ?>

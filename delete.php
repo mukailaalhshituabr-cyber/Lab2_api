@@ -1,44 +1,29 @@
 <?php
-// THIS MUST BE THE FIRST LINE
-header('Content-Type: application/json');
+header("Content-Type: application/json");
+include "../db.php";
 
-// Include database connection
-require_once 'db.php';
-
-// Check if ID is provided
-if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
+if (!isset($_POST['id'])) {
     echo json_encode([
-        'success' => false,
-        'error' => 'Valid ID required'
+        "success" => false,
+        "error" => "ID required"
     ]);
     exit;
 }
 
-$id = $_POST['id'];
+$id = intval($_POST['id']);
 
-try {
-    // Delete the record
-    $stmt = $pdo->prepare("DELETE FROM items WHERE id = ?");
-    $stmt->execute([$id]);
-    
-    if ($stmt->rowCount() > 0) {
-        // Delete successful
-        echo json_encode([
-            'success' => true
-        ]);
-    } else {
-        // No record found with that ID
-        echo json_encode([
-            'success' => false,
-            'error' => 'Record not found'
-        ]);
-    }
-    
-} catch(PDOException $e) {
-    // Database error
+$sql = "DELETE FROM items WHERE id=$id";
+
+if ($conn->query($sql) && $conn->affected_rows > 0) {
     echo json_encode([
-        'success' => false,
-        'error' => 'Failed to delete record'
+        "success" => true
+    ]);
+} else {
+    echo json_encode([
+        "success" => false,
+        "error" => "Delete failed or record not found"
     ]);
 }
+
+$conn->close();
 ?>
