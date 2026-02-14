@@ -1,27 +1,21 @@
 <?php
-header("Content-Type: application/json");
-include "../db.php";
+header('Content-Type: application/json');
 
-$sql = "SELECT * FROM items";
-$result = $conn->query($sql);
+require_once 'db.php';
 
-$data = [];
-
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-    }
-
+try {
+    $stmt = $pdo->query("SELECT id, name, phone FROM items ORDER BY id DESC");
+    $items = $stmt->fetchAll();
+    
     echo json_encode([
-        "success" => true,
-        "data" => $data
-    ]);
-} else {
+        'success' => true,
+        'data' => $items
+    ], JSON_PRETTY_PRINT);
+    
+} catch(PDOException $e) {
     echo json_encode([
-        "success" => false,
-        "error" => "Query failed"
+        'success' => false,
+        'error' => 'Failed to fetch records'
     ]);
 }
-
-$conn->close();
 ?>
