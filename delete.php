@@ -12,7 +12,7 @@ if (!isset($_POST['id'])) {
 
 $id = intval($_POST['id']);
 
-$sql = "DELETE FROM items WHERE id=$id";
+$sql = "DELETE FROM student WHERE id=$id";
 
 if ($conn->query($sql) && $conn->affected_rows > 0) {
     echo json_encode([

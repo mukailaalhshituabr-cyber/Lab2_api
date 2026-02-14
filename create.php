@@ -13,7 +13,7 @@ if (!isset($_POST['name']) || !isset($_POST['phone'])) {
 $name = $conn->real_escape_string($_POST['name']);
 $phone = $conn->real_escape_string($_POST['phone']);
 
-$sql = "INSERT INTO items (name, phone) VALUES ('$name', '$phone')";
+$sql = "INSERT INTO student (name, phone) VALUES ('$name', '$phone')";
 
 if ($conn->query($sql)) {
     echo json_encode([

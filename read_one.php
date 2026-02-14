@@ -12,7 +12,7 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-$sql = "SELECT * FROM items WHERE id = $id";
+$sql = "SELECT * FROM  WHERE id = $id";
 $result = $conn->query($sql);
 
 if ($result && $result->num_rows > 0) {
